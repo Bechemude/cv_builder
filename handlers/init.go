@@ -1,13 +1,18 @@
 package handlers
 
-import "cvbuilder/services"
+import (
+	"cvbuilder/external"
+	"cvbuilder/services"
+)
 
 type Handlers struct {
-	s *services.Services
+	s  *services.Services
+	ex *external.External
 }
 
-func Init(s *services.Services) (*Handlers, error) {
+func Init(s *services.Services, ex *external.External) (*Handlers, error) {
 	return &Handlers{
 		s,
+		ex,
 	}, nil
 }

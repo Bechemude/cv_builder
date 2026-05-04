@@ -1,6 +1,9 @@
 package services
 
-import "cvbuilder/repos"
+import (
+	"cvbuilder/external"
+	"cvbuilder/repos"
+)
 
 type Services struct {
 	r *repos.Repos
@@ -10,10 +13,10 @@ type Services struct {
 	WebReader       *WebReader
 }
 
-func Init(r *repos.Repos) (*Services, error) {
+func Init(r *repos.Repos, ex *external.External) (*Services, error) {
 	pdfReader := InitPDFReader()
 	templateBuilder := InitTemplateBuilder()
-	webReader := InitWebReader()
+	webReader := InitWebReader(ex)
 
 	return &Services{
 		r: r,

@@ -1,7 +1,13 @@
 package services
 
-type WebReader struct{}
+import "cvbuilder/external"
 
-func InitWebReader() *WebReader {
-	return &WebReader{}
+type WebReader struct {
+	ex *external.External
+}
+
+func InitWebReader(ex *external.External) *WebReader {
+	return &WebReader{
+		ex,
+	}
 }

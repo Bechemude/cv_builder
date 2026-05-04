@@ -4,6 +4,7 @@ import (
 	"cvbuilder/bot"
 	"cvbuilder/config"
 	"cvbuilder/db"
+	"cvbuilder/external"
 	"cvbuilder/handlers"
 	"cvbuilder/repos"
 	"cvbuilder/services"
@@ -20,17 +21,19 @@ func main() {
 		panic(err)
 	}
 
+	ex := external.Init(cfg)
+
 	repos, err := repos.Init(db)
 	if err != nil {
 		panic(err)
 	}
 
-	s, err := services.Init(repos)
+	s, err := services.Init(repos, ex)
 	if err != nil {
 		panic(err)
 	}
 
-	h, err := handlers.Init(s)
+	h, err := handlers.Init(s, ex)
 
 	bot := bot.Init(cfg)
 

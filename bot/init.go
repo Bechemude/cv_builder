@@ -31,9 +31,11 @@ func Init(c *config.Config) *Bot {
 }
 
 func (b *Bot) RegisterHandlers(h *handlers.Handlers) {
-	b.b.Handle("/hello", h.SayHello)
+	b.b.Handle(tele.OnText, h.ChatCompletion)
 }
 
 func (b *Bot) Run() {
+	log.Println("Connected to tg bot")
+
 	b.b.Start()
 }

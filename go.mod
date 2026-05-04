@@ -20,6 +20,7 @@ require (
 require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
+	github.com/revrost/go-openrouter v1.3.0
 	golang.org/x/text v0.21.0 // indirect
 	gopkg.in/telebot.v4 v4.0.0-beta.7
 	gorm.io/driver/postgres v1.6.0
