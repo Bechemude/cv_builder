@@ -31,6 +31,8 @@ func Init(c *config.Config) *Bot {
 }
 
 func (b *Bot) RegisterHandlers(h *handlers.Handlers) {
+	b.b.Handle("/start", h.Start)
+	b.b.Handle(tele.OnDocument, h.Document)
 	b.b.Handle(tele.OnText, h.ChatCompletion)
 }
 

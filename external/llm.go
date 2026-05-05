@@ -42,5 +42,5 @@ func (llm *LLM) ChatCompletion(message string) (string, error) {
 	response := resp.Choices[0].Message.Content.Text
 
 	return response, nil
-
 }
+

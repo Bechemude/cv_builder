@@ -4,12 +4,12 @@ import "cvbuilder/config"
 
 type External struct {
 	LLM *LLM
+	Web *Web
 }
 
 func Init(c *config.Config) *External {
-	llm := InitLLM(c)
-
 	return &External{
-		LLM: llm,
+		LLM: InitLLM(c),
+		Web: InitWeb(),
 	}
 }

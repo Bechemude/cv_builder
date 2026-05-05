@@ -6,7 +6,8 @@ import (
 )
 
 type Services struct {
-	r *repos.Repos
+	User *repos.User
+	CV   *repos.CV
 
 	PDFReader       *PDFReader
 	TemplateBuilder *TemplateBuilder
@@ -14,15 +15,12 @@ type Services struct {
 }
 
 func Init(r *repos.Repos, ex *external.External) (*Services, error) {
-	pdfReader := InitPDFReader()
-	templateBuilder := InitTemplateBuilder()
-	webReader := InitWebReader(ex)
-
 	return &Services{
-		r: r,
+		User: r.User,
+		CV:   r.CV,
 
-		PDFReader:       pdfReader,
-		TemplateBuilder: templateBuilder,
-		WebReader:       webReader,
+		PDFReader:       InitPDFReader(ex, r),
+		TemplateBuilder: InitTemplateBuilder(),
+		WebReader:       InitWebReader(ex, r),
 	}, nil
 }

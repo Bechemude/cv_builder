@@ -3,7 +3,6 @@ module cvbuilder
 go 1.25.5
 
 require (
-	github.com/davecgh/go-spew v1.1.1
 	github.com/joho/godotenv v1.5.1
 	gorm.io/gorm v1.31.1
 )
