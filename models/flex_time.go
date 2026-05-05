@@ -24,7 +24,8 @@ func (ft *FlexTime) UnmarshalJSON(data []byte) error {
 	// plain string: "2024-01-01T00:00:00Z"
 	if s[0] == '"' {
 		inner := s[1 : len(s)-1]
-		if inner == "" {
+		// handle "null", "none", "present", "current" — LLM sometimes returns these as strings
+		if inner == "" || inner == "null" || inner == "none" || inner == "present" || inner == "current" {
 			ft.T = nil
 			return nil
 		}

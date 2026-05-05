@@ -23,6 +23,12 @@ func JobSchema() string {
 	return string(b)
 }
 
+// CVVariantSchema generates a JSON schema example from the CVVariant struct.
+func CVVariantSchema() string {
+	b, _ := json.MarshalIndent(buildExample(reflect.TypeOf(CVVariant{})), "", "  ")
+	return string(b)
+}
+
 func buildExample(t reflect.Type) interface{} {
 	if t.Kind() == reflect.Ptr {
 		if t == timePtrType {

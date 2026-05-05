@@ -34,6 +34,7 @@ func (b *Bot) RegisterHandlers(h *handlers.Handlers) {
 	b.b.Handle("/start", h.Start)
 	b.b.Handle(tele.OnDocument, h.Document)
 	b.b.Handle(tele.OnText, h.ChatCompletion)
+	b.b.Handle(&tele.InlineButton{Unique: "cv_lang"}, h.CVLangCallback)
 }
 
 func (b *Bot) Run() {

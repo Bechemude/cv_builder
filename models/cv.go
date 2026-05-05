@@ -18,13 +18,13 @@ type CV struct {
 type JobHistory struct {
 	gorm.Model
 
-	CVID        uint       `json:"-"            gorm:"column:cv_id"`
-	Title       string     `json:"title"        gorm:"column:title"`
-	Description string     `json:"description"  gorm:"column:description"`
-	CompanyName string     `json:"companyName"  gorm:"column:company_name"`
-	CompanyUrl  string     `json:"companyUrl"   gorm:"column:company_url"`
-	Position    string     `json:"position"     gorm:"column:position"`
-	Start       FlexTime   `json:"start"        gorm:"column:start"`
-	End         FlexTime   `json:"end"          gorm:"column:end"`
-	Tags        []string   `json:"tags"         gorm:"serializer:json"`
+	CVID        uint     `json:"-"            gorm:"column:cv_id"`
+	Title       string   `json:"title"        gorm:"column:title"`
+	Description string   `json:"description"  gorm:"column:description"`
+	CompanyName string   `json:"companyName"  gorm:"column:company_name"`
+	CompanyUrl  string   `json:"companyUrl"   gorm:"column:company_url"`
+	Position    string   `json:"position"     gorm:"column:position"`
+	Start       FlexTime `json:"start"        gorm:"column:start"`
+	End         FlexTime `json:"end"          gorm:"column:end"`
+	Tags        []string `json:"tags"         gorm:"serializer:json"`
 }

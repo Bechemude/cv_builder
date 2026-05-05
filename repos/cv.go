@@ -39,6 +39,10 @@ func (c *CV) Update(cv *models.CV) error {
 	return nil
 }
 
+func (c *CV) LoadJobsHistory(cv *models.CV) error {
+	return c.db.Postgres.Preload("JobsHistory").First(cv, cv.ID).Error
+}
+
 func (c *CV) ListByUserID(userID uint) ([]models.CV, error) {
 	var cvs []models.CV
 	if err := c.db.Postgres.Where("user_id = ?", userID).Find(&cvs).Error; err != nil {

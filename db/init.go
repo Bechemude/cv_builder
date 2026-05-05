@@ -32,6 +32,7 @@ func Init(c *config.Config) (*DB, error) {
 		&models.CV{},
 		&models.JobHistory{},
 		&models.Job{},
+		&models.CVVariant{},
 	)
 	if err != nil {
 		log.Printf("Migration error: %v", err)

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="{{.Language}}">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    font-size: 11px;
+    color: #2D2D2D;
+    background: #fff;
+  }
+
+  .page {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── Sidebar ─────────────────────────────── */
+  .sidebar {
+    width: 32%;
+    background: #1B2B4B;
+    color: #fff;
+    padding: 36px 22px;
+    flex-shrink: 0;
+  }
+
+  .name {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 4px;
+    word-break: break-word;
+  }
+
+  .current-position {
+    font-size: 11px;
+    color: #A8BFE0;
+    margin-bottom: 32px;
+    font-weight: 400;
+  }
+
+  .s-section {
+    margin-bottom: 26px;
+  }
+
+  .s-section-title {
+    font-size: 8.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+    color: #4F8EF7;
+    border-bottom: 1px solid #2D3F5A;
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+  }
+
+  .skill-tag {
+    display: inline-block;
+    background: #253552;
+    color: #C0D4F5;
+    font-size: 9px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin: 2px 3px 2px 0;
+    line-height: 1.5;
+  }
+
+  /* ── Main ────────────────────────────────── */
+  .main {
+    width: 68%;
+    padding: 36px 30px;
+  }
+
+  .m-section {
+    margin-bottom: 26px;
+  }
+
+  .m-section-title {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+    color: #4F8EF7;
+    border-bottom: 2px solid #4F8EF7;
+    padding-bottom: 5px;
+    margin-bottom: 14px;
+  }
+
+  /* Summary */
+  .summary-text {
+    font-size: 11px;
+    line-height: 1.65;
+    color: #444;
+  }
+
+  /* Job */
+  .job + .job {
+    margin-top: 18px;
+    padding-top: 16px;
+    border-top: 1px solid #EEF1F6;
+  }
+
+  .job-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .job-company {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1B2B4B;
+  }
+
+  .job-dates {
+    font-size: 9px;
+    color: #8A99B3;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .job-title-row {
+    margin: 3px 0 7px;
+  }
+
+  .job-title {
+    font-size: 10.5px;
+    color: #4F8EF7;
+    font-weight: 600;
+  }
+
+  .job-position {
+    font-size: 9.5px;
+    color: #8A99B3;
+  }
+
+  .job-desc {
+    font-size: 10px;
+    line-height: 1.6;
+    color: #555;
+  }
+
+  .job-tags {
+    margin-top: 7px;
+  }
+
+  .job-tag {
+    display: inline-block;
+    font-size: 8.5px;
+    color: #4F8EF7;
+    border: 1px solid #D0E0FF;
+    padding: 2px 7px;
+    border-radius: 3px;
+    margin: 2px 3px 2px 0;
+    background: #F4F8FF;
+  }
+
+  /* Motivation */
+  .motivation-text {
+    font-size: 10.5px;
+    line-height: 1.65;
+    color: #444;
+    font-style: italic;
+    border-left: 3px solid #4F8EF7;
+    padding-left: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="name">{{.FirstName}} {{.LastName}}</div>
+    {{if .CurrentPosition}}
+    <div class="current-position">{{.CurrentPosition}}</div>
+    {{end}}
+
+    {{if .Skills}}
+    <div class="s-section">
+      <div class="s-section-title">{{.Labels.Skills}}</div>
+      {{range .Skills}}<span class="skill-tag">{{.}}</span>{{end}}
+    </div>
+    {{end}}
+  </div>
+
+  <!-- Main -->
+  <div class="main">
+
+    {{if .Summary}}
+    <div class="m-section">
+      <div class="m-section-title">{{.Labels.Summary}}</div>
+      <p class="summary-text">{{.Summary}}</p>
+    </div>
+    {{end}}
+
+    {{if .Jobs}}
+    <div class="m-section">
+      <div class="m-section-title">{{.Labels.Experience}}</div>
+      {{range .Jobs}}
+      <div class="job">
+        <div class="job-header">
+          <div class="job-company">{{.CompanyName}}</div>
+          <div class="job-dates">{{.StartStr}} — {{.EndStr}}</div>
+        </div>
+        <div class="job-title-row">
+          <span class="job-title">{{.Title}}</span>
+          {{if ne .Title .Position}}<span class="job-position"> · {{.Position}}</span>{{end}}
+        </div>
+        {{if .Description}}<div class="job-desc">{{.Description}}</div>{{end}}
+        {{if .Tags}}
+        <div class="job-tags">{{range .Tags}}<span class="job-tag">{{.}}</span>{{end}}</div>
+        {{end}}
+      </div>
+      {{end}}
+    </div>
+    {{end}}
+
+    {{if .MotivationLetter}}
+    <div class="m-section">
+      <div class="m-section-title">{{.Labels.Motivation}}</div>
+      <p class="motivation-text">{{.MotivationLetter}}</p>
+    </div>
+    {{end}}
+
+  </div>
+</div>
+</body>
+</html>

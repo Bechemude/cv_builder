@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 	"regexp"
 	"strings"
 )
@@ -27,6 +28,11 @@ func (w *Web) FetchURL(url string) (string, error) {
 	}
 
 	return stripHTML(string(body)), nil
+}
+
+func (w *Web) SearchCompany(name string) (string, error) {
+	searchURL := "https://lite.duckduckgo.com/lite/?q=" + url.QueryEscape(name+" company")
+	return w.FetchURL(searchURL)
 }
 
 var (
