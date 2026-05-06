@@ -28,7 +28,7 @@ func main() {
 		panic(err)
 	}
 
-	s, err := services.Init(repos, ex)
+	s, err := services.Init(repos, ex, cfg)
 	if err != nil {
 		panic(err)
 	}

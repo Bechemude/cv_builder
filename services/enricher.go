@@ -2,6 +2,7 @@ package services
 
 import (
 	"context"
+	"cvbuilder/config"
 	"cvbuilder/external"
 	"cvbuilder/prompts"
 	"encoding/json"
@@ -12,8 +13,8 @@ import (
 )
 
 const (
-	maxLinks       = 2
-	fetchTimeout   = 5 * time.Second
+	maxLinks     = 2
+	fetchTimeout = 5 * time.Second
 )
 
 type jobMeta struct {
@@ -23,15 +24,16 @@ type jobMeta struct {
 
 type Enricher struct {
 	ex *external.External
+	c  *config.Config
 }
 
-func InitEnricher(ex *external.External) *Enricher {
-	return &Enricher{ex: ex}
+func InitEnricher(ex *external.External, c *config.Config) *Enricher {
+	return &Enricher{ex: ex, c: c}
 }
 
 // ExtractMeta asks LLM to pull company name and relevant links from raw text.
 func (e *Enricher) ExtractMeta(text string) (*jobMeta, error) {
-	raw, err := e.ex.LLM.ChatCompletion(prompts.ExtractJobMeta + "\n\n" + text)
+	raw, err := e.ex.LLM.ChatCompletion(prompts.ExtractJobMeta+"\n\n"+text, e.c.ModelMain)
 	if err != nil {
 		return nil, fmt.Errorf("meta extraction error: %w", err)
 	}

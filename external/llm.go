@@ -10,6 +10,7 @@ import (
 
 type LLM struct {
 	client *openrouter.Client
+	c      *config.Config
 }
 
 func InitLLM(c *config.Config) *LLM {
@@ -21,14 +22,15 @@ func InitLLM(c *config.Config) *LLM {
 
 	return &LLM{
 		client: client,
+		c:      c,
 	}
 }
 
-func (llm *LLM) ChatCompletion(message string) (string, error) {
+func (llm *LLM) ChatCompletion(message string, model string) (string, error) {
 	resp, err := llm.client.CreateChatCompletion(
 		context.Background(),
 		openrouter.ChatCompletionRequest{
-			Model: "nvidia/nemotron-3-nano-30b-a3b:free",
+			Model: llm.c.ModelMain,
 			Messages: []openrouter.ChatCompletionMessage{
 				openrouter.UserMessage(message),
 			},
@@ -43,4 +45,3 @@ func (llm *LLM) ChatCompletion(message string) (string, error) {
 
 	return response, nil
 }
-

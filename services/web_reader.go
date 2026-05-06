@@ -1,6 +1,7 @@
 package services
 
 import (
+	"cvbuilder/config"
 	"cvbuilder/external"
 	"cvbuilder/models"
 	"cvbuilder/prompts"
@@ -16,14 +17,15 @@ type WebReader struct {
 	r         *repos.Repos
 	enricher  *Enricher
 	cvVariant *CVVariantService
+	c         *config.Config
 }
 
-func InitWebReader(ex *external.External, r *repos.Repos) *WebReader {
+func InitWebReader(ex *external.External, r *repos.Repos, c *config.Config) *WebReader {
 	return &WebReader{
 		ex:        ex,
 		r:         r,
-		enricher:  InitEnricher(ex),
-		cvVariant: InitCVVariantService(ex, r),
+		enricher:  InitEnricher(ex, c),
+		cvVariant: InitCVVariantService(ex, r, c),
 	}
 }
 
@@ -87,7 +89,7 @@ func (w *WebReader) Process(input string, userID uint, progress ProgressFunc) (*
 
 	// [5] Final LLM analysis
 	progress("🤖 Анализирую вакансию...")
-	raw, err := w.ex.LLM.ChatCompletion(prompts.AnalyzeJob + "\n\n" + merged)
+	raw, err := w.ex.LLM.ChatCompletion(prompts.AnalyzeJob+"\n\n"+merged, w.c.ModelMain)
 	if err != nil {
 		return nil, fmt.Errorf("llm error: %w", err)
 	}

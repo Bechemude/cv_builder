@@ -1,6 +1,7 @@
 package services
 
 import (
+	"cvbuilder/config"
 	"cvbuilder/external"
 	"cvbuilder/repos"
 	_ "embed"
@@ -22,7 +23,7 @@ type Services struct {
 	WebReader       *WebReader
 }
 
-func Init(r *repos.Repos, ex *external.External) (*Services, error) {
+func Init(r *repos.Repos, ex *external.External, c *config.Config) (*Services, error) {
 	pdfGen, err := InitPDFGenerator(cvTemplate)
 	if err != nil {
 		return nil, fmt.Errorf("pdf generator init error: %w", err)
@@ -32,11 +33,11 @@ func Init(r *repos.Repos, ex *external.External) (*Services, error) {
 		User:      r.User,
 		CV:        r.CV,
 		Job:       r.Job,
-		CVVariant: InitCVVariantService(ex, r),
+		CVVariant: InitCVVariantService(ex, r, c),
 
-		PDFReader:       InitPDFReader(ex, r),
+		PDFReader:       InitPDFReader(ex, r, c),
 		PDFGenerator:    pdfGen,
 		TemplateBuilder: InitTemplateBuilder(),
-		WebReader:       InitWebReader(ex, r),
+		WebReader:       InitWebReader(ex, r, c),
 	}, nil
 }

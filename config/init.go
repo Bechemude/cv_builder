@@ -7,13 +7,17 @@ import (
 )
 
 type Config struct {
-	PostgresHost     string
-	PostgresPort     string
-	PostgresUser     string
-	PostgresPass     string
-	PostgresDBName   string
+	PostgresHost   string
+	PostgresPort   string
+	PostgresUser   string
+	PostgresPass   string
+	PostgresDBName string
+
 	TelegramBotToken string
-	OpenrouterToken  string
+
+	OpenrouterToken string
+	ModelMain       string
+	ModelSmall      string
 }
 
 func Init() (*Config, error) {
@@ -32,5 +36,7 @@ func Init() (*Config, error) {
 		TelegramBotToken: os.Getenv("TelegramBotToken"),
 
 		OpenrouterToken: os.Getenv("OpenrouterToken"),
+		ModelMain:       os.Getenv("ModelMain"),
+		ModelSmall:      os.Getenv("ModelSmall"),
 	}, nil
 }

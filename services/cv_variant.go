@@ -1,6 +1,7 @@
 package services
 
 import (
+	"cvbuilder/config"
 	"cvbuilder/external"
 	"cvbuilder/models"
 	"cvbuilder/prompts"
@@ -12,10 +13,11 @@ import (
 type CVVariantService struct {
 	ex *external.External
 	r  *repos.Repos
+	c  *config.Config
 }
 
-func InitCVVariantService(ex *external.External, r *repos.Repos) *CVVariantService {
-	return &CVVariantService{ex: ex, r: r}
+func InitCVVariantService(ex *external.External, r *repos.Repos, c *config.Config) *CVVariantService {
+	return &CVVariantService{ex: ex, r: r, c: c}
 }
 
 func (s *CVVariantService) Generate(cv *models.CV, job *models.Job, userID uint, language string) (*models.CVVariant, error) {
@@ -44,7 +46,7 @@ func (s *CVVariantService) Generate(cv *models.CV, job *models.Job, userID uint,
 		"\n\n## ORIGINAL CV\n" + string(cvJSON) +
 		"\n\n## JOB VACANCY\n" + string(jobJSON)
 
-	raw, err := s.ex.LLM.ChatCompletion(input)
+	raw, err := s.ex.LLM.ChatCompletion(input, s.c.ModelMain)
 	if err != nil {
 		return nil, fmt.Errorf("llm error: %w", err)
 	}

@@ -2,6 +2,7 @@ package services
 
 import (
 	"bytes"
+	"cvbuilder/config"
 	"cvbuilder/external"
 	"cvbuilder/models"
 	"cvbuilder/prompts"
@@ -18,10 +19,11 @@ type ProgressFunc func(string)
 type PDFReader struct {
 	ex *external.External
 	r  *repos.Repos
+	c  *config.Config
 }
 
-func InitPDFReader(ex *external.External, r *repos.Repos) *PDFReader {
-	return &PDFReader{ex: ex, r: r}
+func InitPDFReader(ex *external.External, r *repos.Repos, c *config.Config) *PDFReader {
+	return &PDFReader{ex: ex, r: r, c: c}
 }
 
 func (p *PDFReader) Read(fileName string, data []byte, userID uint, progress ProgressFunc) (*models.CV, error) {
@@ -33,7 +35,7 @@ func (p *PDFReader) Read(fileName string, data []byte, userID uint, progress Pro
 	log.Println(text)
 
 	progress("🤖 Анализирую резюме с помощью AI...")
-	raw, err := p.ex.LLM.ChatCompletion(prompts.GetInfoFromCV + "\n\n" + text)
+	raw, err := p.ex.LLM.ChatCompletion(prompts.GetInfoFromCV+"\n\n"+text, p.c.ModelMain)
 	if err != nil {
 		return nil, fmt.Errorf("llm error: %w", err)
 	}
