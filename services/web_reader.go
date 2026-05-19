@@ -8,6 +8,7 @@ import (
 	"cvbuilder/repos"
 	"encoding/json"
 	"fmt"
+	"log"
 	"strings"
 	"sync"
 )
@@ -26,6 +27,7 @@ func InitWebReader(ex *external.External, r *repos.Repos, c *config.Config) *Web
 		r:         r,
 		enricher:  InitEnricher(ex, c),
 		cvVariant: InitCVVariantService(ex, r, c),
+		c:         c,
 	}
 }
 
@@ -86,6 +88,8 @@ func (w *WebReader) Process(input string, userID uint, progress ProgressFunc) (*
 
 	// [4] Merge all content
 	merged := w.enricher.Merge(text, linkedPages, companyInfo)
+
+	log.Println(prompts.AnalyzeJob + "\n\n" + merged)
 
 	// [5] Final LLM analysis
 	progress("🤖 Анализирую вакансию...")

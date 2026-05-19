@@ -23,6 +23,11 @@ func main() {
 
 	ex := external.Init(cfg)
 
+	err = ex.LLM.ChechHealth()
+	if err != nil {
+		panic(err)
+	}
+
 	repos, err := repos.Init(db)
 	if err != nil {
 		panic(err)

@@ -4,6 +4,7 @@ import (
 	"context"
 	"cvbuilder/config"
 	"fmt"
+	"log"
 
 	openrouter "github.com/revrost/go-openrouter"
 )
@@ -27,10 +28,11 @@ func InitLLM(c *config.Config) *LLM {
 }
 
 func (llm *LLM) ChatCompletion(message string, model string) (string, error) {
+	log.Printf("req start")
 	resp, err := llm.client.CreateChatCompletion(
 		context.Background(),
 		openrouter.ChatCompletionRequest{
-			Model: llm.c.ModelMain,
+			Model: model,
 			Messages: []openrouter.ChatCompletionMessage{
 				openrouter.UserMessage(message),
 			},
@@ -44,4 +46,16 @@ func (llm *LLM) ChatCompletion(message string, model string) (string, error) {
 	response := resp.Choices[0].Message.Content.Text
 
 	return response, nil
+}
+
+func (llm *LLM) ChechHealth() error {
+	_, err := llm.client.ListModels(context.TODO())
+
+	if err != nil {
+		log.Println("Model check health failed")
+		return err
+	} else {
+		log.Println("Model check health success")
+		return nil
+	}
 }

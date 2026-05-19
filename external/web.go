@@ -31,7 +31,7 @@ func (w *Web) FetchURL(url string) (string, error) {
 }
 
 func (w *Web) SearchCompany(name string) (string, error) {
-	searchURL := "https://lite.duckduckgo.com/lite/?q=" + url.QueryEscape(name+" company")
+	searchURL := "https://www.google.com/search?q=" + url.QueryEscape(name+" company")
 	return w.FetchURL(searchURL)
 }
 
