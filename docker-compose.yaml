@@ -1,0 +1,32 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${PostgresUser}
+      POSTGRES_PASSWORD: ${PostgresPass}
+      POSTGRES_DB: ${PostgresDBName}
+    ports:
+      - "${PostgresPort}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${PostgresUser} -d ${PostgresDBName}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    env_file:
+      - .env
+    environment:
+      - PostgresHost=postgres
+      - PostgresPort=5432
+    volumes:
+      - ./.env:/app/.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
