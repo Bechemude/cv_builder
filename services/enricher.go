@@ -39,7 +39,7 @@ func (e *Enricher) ExtractMeta(text string) (*jobMeta, error) {
 	}
 
 	var meta jobMeta
-	if err := json.Unmarshal([]byte(stripMarkdown(raw)), &meta); err != nil {
+	if err := json.Unmarshal([]byte(cleanLLMResponse(raw)), &meta); err != nil {
 		return nil, fmt.Errorf("meta parse error: %w", err)
 	}
 

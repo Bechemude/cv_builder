@@ -44,7 +44,7 @@ func (p *PDFReader) Read(fileName string, data []byte, userID uint, progress Pro
 
 	progress("💾 Сохраняю резюме...")
 	var cv models.CV
-	if err := json.Unmarshal([]byte(stripMarkdown(raw)), &cv); err != nil {
+	if err := json.Unmarshal([]byte(cleanLLMResponse(raw)), &cv); err != nil {
 		return nil, fmt.Errorf("json parse error: %w\nraw: %s", err, raw)
 	}
 
@@ -67,6 +67,46 @@ func stripMarkdown(s string) string {
 		s = strings.TrimSpace(s)
 	}
 	return s
+}
+
+// sanitizeJSON escapes literal newlines and tabs inside JSON string values
+// that LLMs sometimes fail to escape.
+func sanitizeJSON(s string) string {
+	var buf bytes.Buffer
+	inStr := false
+	esc := false
+	for _, r := range s {
+		if esc {
+			esc = false
+			buf.WriteRune(r)
+			continue
+		}
+		if r == '\\' {
+			esc = true
+			buf.WriteRune(r)
+			continue
+		}
+		if r == '"' {
+			inStr = !inStr
+			buf.WriteRune(r)
+			continue
+		}
+		if inStr && (r == '\n' || r == '\r') {
+			buf.WriteString("\\n")
+			continue
+		}
+		if inStr && r == '\t' {
+			buf.WriteString("\\t")
+			continue
+		}
+		buf.WriteRune(r)
+	}
+	return buf.String()
+}
+
+// cleanLLMResponse strips markdown wrappers and sanitizes JSON from an LLM response.
+func cleanLLMResponse(s string) string {
+	return sanitizeJSON(stripMarkdown(s))
 }
 
 func extractText(data []byte) (string, error) {

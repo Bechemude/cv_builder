@@ -24,7 +24,6 @@ type cvLabels struct {
 	Summary    string
 	Experience string
 	Skills     string
-	Motivation string
 	Present    string
 }
 
@@ -45,7 +44,6 @@ type cvData struct {
 	LastName         string
 	CurrentPosition  string
 	Summary          string
-	MotivationLetter string
 	Skills           []string
 	Jobs             []cvJobData
 	Language         string
@@ -105,7 +103,6 @@ func buildCVData(cv *models.CV, language string) cvData {
 		LastName:         cv.LastName,
 		CurrentPosition:  currentPos,
 		Summary:          cv.Summary,
-		MotivationLetter: cv.MotivationLetter,
 		Skills:           cv.Tags,
 		Jobs:             jobs,
 		Language:         language,
@@ -116,12 +113,11 @@ func buildCVData(cv *models.CV, language string) cvData {
 // labelsFor returns localized section titles.
 func labelsFor(language string) cvLabels {
 	switch language {
-	case "ru":
+		case "ru":
 		return cvLabels{
 			Summary:    "О себе",
 			Experience: "Опыт работы",
 			Skills:     "Навыки",
-			Motivation: "Сопроводительное письмо",
 			Present:    "н.в.",
 		}
 	default:
@@ -129,7 +125,6 @@ func labelsFor(language string) cvLabels {
 			Summary:    "Summary",
 			Experience: "Experience",
 			Skills:     "Skills",
-			Motivation: "Cover Letter",
 			Present:    "Present",
 		}
 	}

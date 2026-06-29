@@ -30,7 +30,6 @@ func (v *CVVariant) BuildCV(original *CV) *CV {
 		LastName:         original.LastName,
 		DOB:              original.DOB,
 		Summary:          v.Summary,
-		MotivationLetter: v.MotivationLetter,
 		JobsHistory:      v.JobsHistory,
 		Tags:             v.Tags,
 	}

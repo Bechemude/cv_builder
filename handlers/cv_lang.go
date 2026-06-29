@@ -56,6 +56,8 @@ func (h *Handlers) CVLangCallback(c tele.Context) error {
 		return fmt.Errorf("generate variant error: %w", err)
 	}
 
+	coverLetter := variant.MotivationLetter
+
 	_ = c.Edit("📄 Рендерю PDF...")
 
 	fullCV := variant.BuildCV(&cv)
@@ -70,6 +72,11 @@ func (h *Handlers) CVLangCallback(c tele.Context) error {
 
 	// Send summary card
 	c.Bot().Send(c.Recipient(), formatVariantMessage(variant), tele.ModeMarkdown)
+
+	// Send cover letter as a separate text message
+	if coverLetter != "" {
+		c.Bot().Send(c.Recipient(), coverLetter)
+	}
 
 	// Send PDF file
 	fileName := fmt.Sprintf("cv_%s_%s.pdf", fullCV.FirstName, fullCV.LastName)

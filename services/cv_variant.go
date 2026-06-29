@@ -8,6 +8,7 @@ import (
 	"cvbuilder/repos"
 	"encoding/json"
 	"fmt"
+	"log"
 )
 
 type CVVariantService struct {
@@ -46,24 +47,36 @@ func (s *CVVariantService) Generate(cv *models.CV, job *models.Job, userID uint,
 		"\n\n## ORIGINAL CV\n" + string(cvJSON) +
 		"\n\n## JOB VACANCY\n" + string(jobJSON)
 
-	raw, err := s.ex.LLM.ChatCompletion(input, s.c.ModelMain)
-	if err != nil {
-		return nil, fmt.Errorf("llm error: %w", err)
-	}
-
 	var variant models.CVVariant
-	if err := json.Unmarshal([]byte(stripMarkdown(raw)), &variant); err != nil {
-		return nil, fmt.Errorf("json parse error: %w\nraw: %s", err, raw)
+	var lastErr error
+
+	for attempt := range 3 {
+		raw, err := s.ex.LLM.ChatCompletion(input, s.c.ModelMain)
+		if err != nil {
+			lastErr = fmt.Errorf("llm error: %w", err)
+			continue
+		}
+
+		cleaned := cleanLLMResponse(raw)
+
+		if err := json.Unmarshal([]byte(cleaned), &variant); err != nil {
+			log.Printf("json parse error (attempt %d/3): %v\nraw: %s\ncleaned: %s",
+				attempt+1, err, raw, cleaned)
+			lastErr = fmt.Errorf("json parse error: %w", err)
+			continue
+		}
+
+		variant.UserID = userID
+		variant.CVID = cv.ID
+		variant.JobID = job.ID
+		variant.Language = language
+
+		if err := s.r.CVVariant.Create(&variant); err != nil {
+			return nil, fmt.Errorf("save error: %w", err)
+		}
+
+		return &variant, nil
 	}
 
-	variant.UserID = userID
-	variant.CVID = cv.ID
-	variant.JobID = job.ID
-	variant.Language = language
-
-	if err := s.r.CVVariant.Create(&variant); err != nil {
-		return nil, fmt.Errorf("save error: %w", err)
-	}
-
-	return &variant, nil
+	return nil, fmt.Errorf("generate variant error: %w", lastErr)
 }

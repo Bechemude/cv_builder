@@ -101,7 +101,7 @@ func (w *WebReader) Process(input string, userID uint, progress ProgressFunc) (*
 	// [6] Save
 	progress("💾 Сохраняю вакансию...")
 	var job models.Job
-	if err := json.Unmarshal([]byte(stripMarkdown(raw)), &job); err != nil {
+	if err := json.Unmarshal([]byte(cleanLLMResponse(raw)), &job); err != nil {
 		return nil, fmt.Errorf("json parse error: %w\nraw: %s", err, raw)
 	}
 
