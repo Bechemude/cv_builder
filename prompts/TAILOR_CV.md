@@ -10,13 +10,34 @@ Return ONLY a valid JSON object matching this structure:
 
 ---
 
+## FACTUAL FIDELITY — STRICTER THAN ALL OTHER RULES
+
+You MUST preserve the factual truth of the original CV. Your only job is to reorder, rephrase, and emphasize — NEVER to invent or embellish.
+
+- Every claim in the output must be directly traceable to the original CV text
+- If the original does not mention it, do NOT include it
+- If the original is vague, keep it vague — do not add specifics
+- When in doubt, omit rather than fabricate
+
+## CRITICAL CONSTRAINTS
+
+- NEVER invent experience, skills, companies, dates, or metrics not present in the original
+- NEVER change: firstName, lastName, DOB, companyName, companyUrl, position, start, end dates
+- NEVER remove jobs from history. Keep jobsHistory entries in their original chronological order — do NOT reorder job entries by relevance to the vacancy. Only the content within each job (description, tags) may be reframed.
+- Do NOT add any new tags — only reorder existing tags from the original CV
+- Do NOT retroactively apply job-specific terminology to past roles unless the original CV explicitly used those terms
+- Match the language of ALL output text — including any spelled-out month names — to the language of the original CV (e.g. CV in Russian → write "июнь", not "June"). This is a formatting rule only; it does not authorize changing the actual date values.
+- Preserve the candidate's authentic voice — improve clarity, don't make it sound robotic
+- If the CV is already a strong match, make minimal changes
+
+---
+
 ## YOUR GOALS
 
 1. Make the CV feel written specifically for this role — not a generic document
-2. Mirror the language and terminology of the job description (ATS keyword matching)
-3. Surface the most relevant experience and skills for this specific role
-4. Quantify and strengthen achievements where metrics already exist in the original
-5. Identify how strong a fit this candidate is (matchScore) and explain what was changed
+2. Surface the most relevant experience and skills for this specific role
+3. Quantify achievements where metrics already exist in the original
+4. Identify how strong a fit this candidate is (matchScore) and explain what was changed
 
 ---
 
@@ -24,25 +45,27 @@ Return ONLY a valid JSON object matching this structure:
 
 ### summary
 - Rewrite the professional summary to directly address this role and company
+- Write in first person singular (я, разработал, руководил — male grammatical gender), as if the candidate is speaking about themselves. Never write in third person (он, кандидат, специалист, etc.)
 - Open with the candidate's most relevant strength for THIS job
-- Include the exact job title or seniority level from the vacancy
-- Mirror 2-3 key technical terms from the job's required skills
 - Keep it 3-5 sentences, punchy and specific
 - If the vacancy emphasizes leadership → lead with team leadership
 - If it emphasizes technical depth → lead with technical expertise
+- Do NOT change the candidate's seniority level or job title to match the vacancy
+- Do NOT inject job-specific terminology unless the candidate's original CV explicitly uses those terms
 
 ### jobsHistory[].description
-- Use the CAR method: Challenge → Action → Result
-- Reorder sentences: most relevant responsibilities for THIS job come FIRST
-- Mirror exact terminology from the job's required skills (e.g. if vacancy says "microservices" use "microservices", not "distributed services")
-- Strengthen quantifiable achievements: if original says "optimized performance", and context suggests scale, add specifics (e.g. "reduced latency by X%") — ONLY if original text implies it, never invent numbers
+- Reorder sentences WITHIN this description: most relevant responsibilities for THIS job come FIRST (this affects sentence order inside a single job's description only — the order of jobs themselves must stay chronological, see CRITICAL CONSTRAINTS)
+- Do not repeat the position/role title (e.g. "Senior Frontend Developer") inside the description text — it already appears in the position field above. Begin the description directly with responsibilities or actions, not by restating the job title.
+- Preserve original facts and framing — do not invent Challenges or Results
+- Never add details not present in the original description
+- Do not invent numbers, metrics, project names, or outcomes
+- If the original is vague, keep it vague — rephrase for clarity only
 - Remove or deprioritize details irrelevant to this role
 - Preserve all factual information: company names, dates, project names, actual technologies used
 
 ### jobsHistory[].tags
-- Reorder: required skills from the vacancy appear first
-- Add technologies mentioned in the job that the candidate demonstrably used (based on their descriptions)
-- Remove nothing — only reorder and potentially add confirmed skills
+- Reorder: required skills from the vacancy appear first, then the rest
+- Do NOT add or remove tags. Only reorder existing tags from the original CV.
 
 ### motivationLetter
 - Write a cover letter paragraph (3-5 sentences) tailored to THIS company and role
@@ -71,20 +94,20 @@ Score how well the ORIGINAL CV matches this job BEFORE tailoring:
 List 3-7 specific changes made and why, in plain language. Examples:
 - "Moved Golang experience to top of first job description — matches primary required skill"
 - "Rewrote summary to emphasize team leadership — vacancy prioritizes lead role"
-- "Added 'microservices' keyword to Defimoon description — confirmed by context, improves ATS score"
+- "Reordered skills to highlight Kubernetes and Docker first — matches primary requirements"
 - "Motivation letter references gaming platform domain — matches company industry"
 
 ---
 
-## CRITICAL CONSTRAINTS
+## REMINDER
 
-- NEVER invent experience, skills, companies, dates, or metrics not present in the original
-- NEVER change: firstName, lastName, DOB, companyName, companyUrl, position, start, end dates
-- NEVER remove jobs from history — reorder or reframe instead
-- ONLY add skills to tags if demonstrably used (visible in descriptions or original tags)
-- Preserve the candidate's authentic voice — improve clarity, don't make it sound robotic
-- If the CV is already a strong match, make minimal changes and explain why in keyChanges
+You have already been given strict FACTUAL FIDELITY rules above. Re-read them before outputting.
 
----
+- If the original says "developed backend services" and the job requires "microservices":
+  ✅ Keep: "developed backend services" (factually accurate)
+  ❌ Wrong: "designed and maintained microservices" (fabricated terminology upgrade)
+
+Your output will be checked against the original for invented facts.
+Violating factual fidelity is worse than producing a less optimized CV.
 
 ## Return ONLY the JSON. No markdown. No explanation. No ```json wrapper.
