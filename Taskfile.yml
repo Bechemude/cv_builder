@@ -1,0 +1,110 @@
+version: '3'
+
+dotenv: ['.env']
+
+vars:
+  BINARY: cvbuilder
+
+tasks:
+
+  # ---------- Онбординг на новой машине ----------
+  setup:
+    desc: Первичная настройка проекта (один раз на новом окружении)
+    cmds:
+      - cmd: cp -n .env.example .env
+        ignore_error: true
+      - task: db:setup
+      - go mod download
+      - echo "Готово. Дальше — task dev"
+
+  # ---------- Повседневная разработка ----------
+  dev:
+    desc: Дев-режим — нативный Postgres + air с hot reload
+    deps: [db:start]
+    cmds:
+      - air
+
+  build:
+    desc: Собрать бинарник
+    cmds:
+      - go build -o bin/{{.BINARY}} .
+
+  test:
+    desc: Тесты
+    cmds:
+      - go test ./... -race -cover
+
+  lint:
+    desc: Линт и статический анализ
+    cmds:
+      - go vet ./...
+      - gofmt -l .
+
+  ci:
+    desc: Полный прогон как в CI
+    cmds:
+      - task: lint
+      - task: test
+      - task: build
+
+  # ---------- Нативный Postgres ----------
+  db:start:
+    desc: Запустить локальный Postgres
+    cmds:
+      - brew services start postgresql@16
+      - |
+        until pg_isready -h "$PostgresHost" -p "$PostgresPort" -q; do sleep 0.3; done
+
+  db:stop:
+    desc: Остановить локальный Postgres
+    cmds:
+      - brew services stop postgresql@16
+
+  db:setup:
+    desc: Создать роль и базу проекта (идемпотентно)
+    cmds:
+      - >
+        psql postgres -tc "SELECT 1 FROM pg_roles WHERE rolname='$PostgresUser'"
+        | grep -q 1 || createuser -s "$PostgresUser"
+      - >
+        psql postgres -tc "SELECT 1 FROM pg_database WHERE datname='$PostgresDBName'"
+        | grep -q 1 || createdb "$PostgresDBName" -O "$PostgresUser"
+      - psql -d "$PostgresDBName" -c "ALTER USER \"$PostgresUser\" WITH PASSWORD '$PostgresPass';"
+
+  db:reset:
+    desc: Снести и пересоздать базу (данные будут потеряны)
+    prompt: Точно удалить базу {{.PostgresDBName}}?
+    cmds:
+      - dropdb --if-exists "$PostgresDBName"
+      - task: db:setup
+
+  db:psql:
+    desc: Зайти в БД через psql
+    cmds:
+      - psql -d "$PostgresDBName"
+
+  db:browse:
+    desc: Открыть БД в lazysql
+    cmds:
+      - lazysql "postgres://$PostgresUser:$PostgresPass@$PostgresHost:$PostgresPort/$PostgresDBName?sslmode=disable"
+
+  # ---------- Docker: воспроизводимость / онбординг без локального postgres ----------
+  docker:build:
+    desc: Собрать образ приложения
+    cmds:
+      - docker compose build
+
+  docker:up:
+    desc: Поднять весь стек (app + postgres) в контейнерах
+    cmds:
+      - docker compose up --build
+
+  docker:down:
+    desc: Остановить и снести контейнерный стек
+    cmds:
+      - docker compose down
+
+  docker:logs:
+    desc: Логи контейнерного стека
+    cmds:
+      - docker compose logs -f

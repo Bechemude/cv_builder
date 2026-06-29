@@ -17,4 +17,4 @@
 - создать Taskfile? зачем?
 
 ## DONE
-~~[x] all tasks looks like this~~
+~~all tasks in done looks like this~~
